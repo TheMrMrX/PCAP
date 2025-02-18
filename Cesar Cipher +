@@ -1,0 +1,32 @@
+# In this exercise I 'improve' the Cesar Cipher (The original Caesar cipher shifts each character by one: a becomes b, z becomes a, and so on. Here, I allow the user to provide a shift value between 1 - 25).
+
+text = input("Enter your message: ")
+
+try:
+    shift = int(input("Please enter a shift value between 1 - 25 "))
+except:
+    shift = int(input("It can't be empty or letters, try again "))
+
+while 25<shift or shift<1:
+    shift = int(input("between 1 - 25 please"))
+
+cipher = ''
+for char in text:
+    if not char.isalpha():
+        cipher += char
+    else:
+        if char.isupper():
+            if (ord(char) + shift) > 90:
+                code = (ord(char)+shift)- 26
+            else:
+                code = ord(char) + shift
+            cipher += chr(code)
+        else:
+            if (ord(char) + shift) > 122:
+                code = (ord(char)+shift) - 26
+            else:
+                code = ord(char) + shift
+            cipher += chr(code)
+
+print(cipher)
+
