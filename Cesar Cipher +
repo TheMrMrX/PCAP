@@ -1,32 +1,35 @@
-# In this exercise I 'improve' the Cesar Cipher (The original Caesar cipher shifts each character by one: a becomes b, z becomes a, and so on. Here, I allow the user to provide a shift value between 1 - 25).
+# In this exercise I 'improve' the Cesar Cipher (The original Caesar cipher shifts each character by one: a becomes b, z becomes a, and so on. Here, I allow the user to provide a shift value).
 
-text = input("Enter your message: ")
+import string
 
-try:
-    shift = int(input("Please enter a shift value between 1 - 25 "))
-except:
-    shift = int(input("It can't be empty or letters, try again "))
-
-while 25<shift or shift<1:
-    shift = int(input("between 1 - 25 please"))
-
-cipher = ''
-for char in text:
-    if not char.isalpha():
-        cipher += char
-    else:
-        if char.isupper():
-            if (ord(char) + shift) > 90:
-                code = (ord(char)+shift)- 26
-            else:
-                code = ord(char) + shift
-            cipher += chr(code)
+def caesar_cipher(text, shift):
+    
+    result = []
+    
+    for char in text:
+        if char.isalpha():  # Only letters are shifted
+            alphabet = string.ascii_lowercase if char.islower() else string.ascii_uppercase
+            new_index = (alphabet.index(char) + int(shift)) % 26 #mod to deal with the possible overflows
+            result.append(alphabet[new_index])
         else:
-            if (ord(char) + shift) > 122:
-                code = (ord(char)+shift) - 26
-            else:
-                code = ord(char) + shift
-            cipher += chr(code)
+            result.append(char)  # Non-alphabet characters are left unchanged
+    
+    print ("".join(result))
 
-print(cipher)
+
+message = input("Please input your message")
+shift_value = input("Please input your shift")
+
+
+check = False
+
+while check == False:
+    try:
+        assert shift_value.isnumeric()
+        
+        check = True
+    except:
+        shift_value = input("Shift must be numeric")
+
+caesar_cipher(message, shift_value)
 
