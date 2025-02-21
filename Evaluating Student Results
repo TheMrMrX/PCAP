@@ -1,0 +1,64 @@
+# In this exercise I evaluate students performance by parsing their test results contained in a text file, with a known structure of 'FirstName Surname Testscore'. I then print a 'report' with the coalesced results (each student can take more than one exam). In the case there are issues with the file/data, I have created custom exceptions.
+
+from os import strerror
+
+f_p = input("Please input file path (absolute): ")
+file_path = fr"{f_p}"
+student_dic = {}
+
+# Custom exceptions
+class StudentsDataException(Exception):
+    def __str__(self):
+        return "There is an issue with the data"
+
+
+class BadLine(StudentsDataException):
+    def __init__(self, line_num, line_content):
+        self.line_num = line_num
+        self.line_content = line_content
+    def __str__(self):
+        return f"BadLine Error at line {self.line_num}: {self.line_content}"
+
+
+class FileEmpty(StudentsDataException):
+    def __str__(self):
+        return "The file is empty"
+
+
+#File processing below
+try:
+    with open(file_path, "rt", encoding="utf-8") as file:
+        lines = file.readlines()  # Read all lines at once
+
+        if not lines:  # Check if file is empty
+            raise FileEmpty
+
+    for line_num, file_line in enumerate(lines, start=1):
+        l1 = file_line.strip().split()
+
+        # Validate correct format
+        if len(l1) != 3:
+            raise BadLine(line_num, file_line.strip())
+  
+        st_name = f"{l1[0]} {l1[1]}"  #Student Name
+
+        try:
+            score = float(l1[2])
+        except ValueError:
+            raise BadLine(line_num, file_line.strip())
+
+    student_dic[st_name] = student_dic.get(st_name, 0) + score  # If the name is the dictionary add 'score' to it. If not use 0 as default value and add 'score'.
+
+#Call custom exceptions below if required 
+except FileEmpty as e:
+    print(e)
+except BadLine as e:
+    print(e)
+except IOError as e:
+    print(f"The file doesn't exist: {strerror(e.errno)}")
+except StudentsDataException as e:
+    print(e)
+
+# Print the sorted results
+for name, total_score in sorted(student_dic.items()):
+    print(f"{name} {total_score:.2f}")  # Display scores with 2 decimal places
