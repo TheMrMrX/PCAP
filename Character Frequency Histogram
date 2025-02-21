@@ -1,0 +1,50 @@
+# In this exercise I access a text file and count the number of occurrences of each character, storing the results in a dictionary. I then output the results into a bar chart for visualization, as well as output the dictionary as a string to a specified text file.
+
+import os
+import string
+import matplotlib.pyplot as plt
+
+# Dictionary that will hold the letter counts
+alphabet_dic = {char: 0 for char in string.ascii_lowercase}
+
+
+# Request the file and destination file paths 
+f_p = input("Please input file path (absolute): ")
+file_path = fr"{f_p}"
+o_p = input("Please input destination file path (absolute): ")
+output_path = fr"{o_p}"
+
+try:
+    with open(file_path, "rt", encoding="utf-8") as data:
+        for char in data.read().lower():
+            if char in alphabet_dic:
+                alphabet_dic[char] += 1
+except IOError as e:
+    print(f"Cannot open the source file: {os.strerror(e.errno)}")
+    alphabet_dic = {}
+
+# Visual check of the dictionary
+print("Character Frequency:", alphabet_dic)
+
+# Output the dictionary as string to specified text file
+try:
+    with open(output_path, "wt", encoding="utf-8") as dest:
+        dest.write(str(alphabet_dic) + "\nImage handling not supported")
+except IOError as e:
+    print(f"Cannot access the destination file: {os.strerror(e.errno)}")
+
+
+# Sort dictionary by frequency (descending order) and keep only the top 5 characters (Don't want an enourmous bar chart!). Output the chart only if alphabet_dic is not empty.
+if  alphabet_dic: 
+  sorted_dic = dict(sorted(alphabet_dic.items(), key=lambda item: item[1], reverse=True))
+  top_5 = dict(list(sorted_dic.items())[:5])  # Keep only top 5 entries
+  
+  # Plot bar chart for top 5
+  plt.figure(figsize=(8, 5))  
+  plt.bar(top_5.keys(), top_5.values(), color="skyblue")
+  plt.xlabel("Letter")
+  plt.ylabel("Frequency")
+  plt.ylim(0, max(top_5.values(), default=10))  
+  plt.title("Top 5 Most Frequent Letters")
+  plt.grid(axis="y", linestyle="--", alpha=0.7)
+  plt.show()
