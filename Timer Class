@@ -1,0 +1,40 @@
+#In this exercise I create a class that accepts a time value (h,m,s). I create instance methods that allow to add or subtract 1 second from the time, dealing with both over and under flows with %.
+
+class Timer:
+    def __init__(self, hour=0, minu=0, sec=0):
+        self.__hour = hour
+        self.__minu = minu
+        self.__sec = sec
+
+    def __str__(self):
+        # Returns time as a string with the format (hh:mm:ss)
+        return f"{self.__hour:02}:{self.__minu:02}:{self.__sec:02}"
+
+    def next_second(self):
+        """Increments the timer by one second."""
+        self.__sec += 1
+        if self.__sec == 60:
+            self.__sec = 0
+            self.__minu += 1
+            if self.__minu == 60:
+                self.__minu = 0
+                self.__hour = (self.__hour + 1) % 24  # Wraps after 23
+
+    def prev_second(self):
+        """Decrements the timer by one second."""
+        self.__sec -= 1
+        if self.__sec < 0:
+            self.__sec = 59
+            self.__minu -= 1
+            if self.__minu < 0:
+                self.__minu = 59
+                self.__hour = (self.__hour - 1) % 24  # Wraps hour if the hour is negative 
+
+
+# Example outputs
+t = Timer(23, 59, 59)
+print(t)  # Output: 23:59:59
+t.next_second()
+print(t)  # Output: 00:00:00
+t.prev_second()
+print(t)  # Output: 23:59:59
