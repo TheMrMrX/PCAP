@@ -1,0 +1,36 @@
+# In this simple exercise I create a class which mimicks a stack, and give it push and pop instance methods. I then extend the implementation by creating another (sub)class which inherits from the 'Stack' class. The subclass overrides the super class pop method and counts the number of pops. I create another instance method to return the count. 
+
+class Stack:
+    def __init__(self):
+        self.__stk = []
+
+    def push(self, val):
+        self.__stk.append(val)
+
+    def pop(self):
+        if self.__stk:  # I check to see if the stack is empty to avoid any issues with the returns 
+            return self.__stk.pop()
+        else:
+            return None  
+
+
+class CountingStack(Stack):
+    def __init__(self):
+        super().__init__() 
+        self.__count = 0
+
+    def get_counter(self):
+        return self.__count
+
+    def pop(self):
+        if len(self._Stack__stk) > 0:  # Ensure stack is not empty
+            self.__count += 1
+            return super().pop()  
+
+# Testing
+stk = CountingStack()
+for i in range(100):
+    stk.push(i)
+    stk.pop()
+
+print(stk.get_counter()) #100
